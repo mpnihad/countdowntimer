@@ -22,45 +22,26 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.isFocused
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.example.androiddevchallenge.ui.theme.*
 import com.example.androiddevchallenge.widget.Widgets
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
 
@@ -173,7 +154,9 @@ fun MyApp() {
                 }
 
                 Text(
-                    text = ":", color = Color.Gray, style = MaterialTheme.typography.h6.copy(fontSize = 30.sp),
+                    text = ":",
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.h6.copy(fontSize = 30.sp),
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )
 
@@ -331,7 +314,7 @@ fun MyApp() {
                         )
                         Text(
                             "S", style = MaterialTheme.typography.h5.copy(
-                                color=Color.Black,
+                                color = Color.Black,
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 textAlign = TextAlign.Center
@@ -440,7 +423,6 @@ fun MyApp() {
 
     }
 }
-
 
 
 fun checkIfTextIsEmpty(text: String): Int {
