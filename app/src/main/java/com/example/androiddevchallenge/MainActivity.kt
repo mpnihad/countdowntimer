@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.example.androiddevchallenge.ui.theme.*
+import com.example.androiddevchallenge.widget.Widgets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -161,7 +162,7 @@ fun MyApp() {
                 )
                 {
 
-                    ClockEditText(
+                    Widgets().ClockEditText(
                         "H",
                         hour,
                         hourFocus,
@@ -185,7 +186,7 @@ fun MyApp() {
                 )
                 {
 
-                    ClockEditText(
+                    Widgets().ClockEditText(
                         "M",
                         min,
                         minFocus,
@@ -212,7 +213,7 @@ fun MyApp() {
                 )
                 {
 
-                    ClockEditText(
+                    Widgets().ClockEditText(
                         "S",
                         sec,
                         secFocus,
@@ -440,167 +441,7 @@ fun MyApp() {
     }
 }
 
-@Composable
-private fun ClockEditText(
-    heading: String,
-    min: TextFieldValue,
-    min_focus: Boolean,
-    viewModelData: MutableLiveData<TextFieldValue>,
-    viewModelFocus: MutableLiveData<Boolean>,
-    viewModelProgress: MutableLiveData<Float>
-) {
 
-    val deltaOverall by rememberSaveable { viewModel.delta }
-    val color = remember { Animatable(Color.Transparent) }
-
-
-
-    Box(
-
-        Modifier
-
-            .fillMaxWidth(0.55f)
-            .fillMaxHeight(0.6f)
-            .clip(shape = RoundedCornerShape(25.dp))
-            .background(color = color.value)
-            .border(
-                BorderStroke(if (min_focus) 0.dp else 2.dp, Color.LightGray),
-                shape = RoundedCornerShape(25.dp)
-            )
-            .onFocusChanged {
-
-                viewModelFocus.value = it.isFocused
-                if (it.isFocused) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        color.animateTo(orange200)
-                    }
-                } else {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        color.animateTo(Color.Transparent)
-                    }
-                }
-
-            }
-
-            .scrollable(
-                orientation = Orientation.Vertical,
-                state = rememberScrollableState { delta ->
-
-                    if (!(viewModel.startButtonClicked.value!!)) {
-
-                        var cuMin = if (min.text.isEmpty()) 0 else min.text.toInt()
-                        val deltaNow = (if (delta == 0f) 1f else delta) / 1000
-                        if (delta > deltaOverall) {
-                            if (deltaNow > deltaOverall) {
-
-                                if (cuMin < (if (heading == "H") 12 else 60)) {
-                                    var changedTime = (++cuMin).toString()
-                                    if (changedTime.length == 1) {
-                                        changedTime = "0$changedTime"
-                                    }
-                                    viewModelData.value = TextFieldValue((changedTime))
-                                    viewModelProgress.value =
-                                        changedTime.toFloat() / (if (heading == "H") 12 else 60)
-
-                                }
-                            }
-                            if ((abs(abs(delta) - deltaOverall)) > 1000) {
-                                viewModel.delta.value = (if (delta == 0f) 1f else delta) / 1000
-                            }
-                        } else {
-                            if (deltaNow < deltaOverall) {
-                                if (cuMin > 0) {
-                                    var changedTime = (--cuMin).toString()
-                                    if (changedTime.length == 1) {
-                                        changedTime = "0$changedTime"
-                                    }
-                                    viewModelData.value = TextFieldValue((changedTime))
-                                    viewModelProgress.value =
-                                        changedTime.toFloat() / (if (heading == "H") 12 else 60)
-
-                                }
-                            }
-                            if ((abs(abs(delta) - deltaOverall)) < 1000) {
-                                viewModel.delta.value = (if (delta == 0f) 1f else delta) / 1000
-                            }
-                        }
-                    }
-                    delta
-                }
-            )
-            .background(Color.Transparent),
-        contentAlignment = Alignment.Center
-    ) {
-
-
-        TextField(
-            value = min,
-            onValueChange = {
-                if (it.text.isEmpty()) {
-                    viewModelData.value = it
-                    viewModelProgress.value = 0.0f
-                } else {
-
-
-                    if (it.text.length <= 2) {
-                        if ((checkIfTextIsEmpty(it.text)) <= (if (heading == "H") 12 else 60)) {
-                            viewModelData.value = it
-                            viewModelProgress.value =
-                                it.text.toFloat() / (if (heading == "H") 12 else 60)
-
-                        }
-                    }
-                }
-            },
-
-            textStyle = MaterialTheme.typography.h5.copy(
-                if (min_focus) {
-                    Color.White
-                } else {
-                    Color.Black
-                }, fontWeight = if (min_focus) {
-                    FontWeight.ExtraBold
-                } else {
-                    FontWeight.Light
-                }, textAlign = TextAlign.Center
-            ),
-
-            enabled = !(viewModel.startButtonClicked.value!!),
-
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
-            ),
-
-
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentSize(align = Alignment.Center),
-
-
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedLabelColor = MaterialTheme.colors.primary,
-                unfocusedLabelColor = Color.Transparent,
-                textColor = Color.DarkGray,
-                disabledIndicatorColor = Color.Transparent,
-            )
-
-        )
-        Text(
-            heading, style = MaterialTheme.typography.h5.copy(
-                if (min_focus) {
-                    Color.White
-                } else {
-                    Color.Black
-                }, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold
-            ),
-            modifier = Modifier.padding(top = 30.dp, start = 20.dp)
-        )
-
-    }
-}
 
 fun checkIfTextIsEmpty(text: String): Int {
     return if (text.isBlank()) {
