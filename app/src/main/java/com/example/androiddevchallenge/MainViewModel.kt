@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.androiddevchallenge
 
 import android.app.Application
@@ -12,14 +27,12 @@ import java.util.concurrent.TimeUnit
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-
     val mInterval by lazy { TIMER_INTERVAL }
     var mHandler: Handler? = null
     var timeInSeconds = 0L
     var startButtonClicked = MutableLiveData(false)
     var pauseClicked = MutableLiveData(false)
     private var initialTime = mutableListOf<Int>()
-
 
     var minProgressTime = MutableLiveData(0.0f)
     var secProgressTime = MutableLiveData(0.0f)
@@ -43,7 +56,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         const val TIMER_INTERVAL = 1000
     }
 
-
     fun resetTimerView() {
 
         timeInSeconds = 0L
@@ -51,15 +63,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         pauseClicked.value = false
 
         initStopWatch()
-
     }
 
     fun reloadTimer() {
 
-        if(initialTime.isNotEmpty()) {
+        if (initialTime.isNotEmpty()) {
             timeInSeconds = (initialTime[0] * 60 * 60L) +
-                    (initialTime[1] * 60L) +
-                    (initialTime[2])
+                (initialTime[1] * 60L) +
+                (initialTime[2])
             startButtonClicked.value = false
             pauseClicked.value = false
 
@@ -67,14 +78,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-
     fun setTimerData() {
         timeInSeconds =
-            (if (hour.value!!.text.isEmpty()) 0 else hour.value!!.text.toInt() * 60 * 60L)+
-                    (if (minutes.value!!.text.isEmpty()) 0 else minutes.value!!.text.toInt() * 60L)+
-                    (if (seconds.value!!.text.isEmpty()) 0 else seconds.value!!.text.toInt())
+            (if (hour.value!!.text.isEmpty()) 0 else hour.value!!.text.toInt() * 60 * 60L) +
+            (if (minutes.value!!.text.isEmpty()) 0 else minutes.value!!.text.toInt() * 60L) +
+            (if (seconds.value!!.text.isEmpty()) 0 else seconds.value!!.text.toInt())
     }
-
 
     fun startTimer() {
         stopTimer()
@@ -92,7 +101,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 if (timeInSeconds == 0L) {
                     stopTimer()
                     startButtonClicked.value = false
-                    pauseClicked.value=false
+                    pauseClicked.value = false
 //                    resetTimerView()
                 } else {
                     timeInSeconds -= 1
@@ -113,7 +122,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         Log.e("formattedTime", formattedTime)
     }
 
-
     private fun getFormattedStopWatch(ms: Long): String {
         var milliseconds = ms
         val hours = TimeUnit.MILLISECONDS.toHours(milliseconds)
@@ -130,8 +138,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         secProgressTime.value = (seconds.toFloat() / 60f)
         hourProgressTime.value = (hours.toFloat() / 12f)
         return "${if (hours < 10) "0" else ""}$hours:" +
-                "${if (minutes < 10) "0" else ""}$minutes:" +
-                "${if (seconds < 10) "0" else ""}$seconds"
+            "${if (minutes < 10) "0" else ""}$minutes:" +
+            "${if (seconds < 10) "0" else ""}$seconds"
     }
 
     fun setInitialTime() {
@@ -140,6 +148,4 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         initialTime.add(1, if (minutes.value!!.text.isEmpty()) 0 else minutes.value!!.text.toInt())
         initialTime.add(2, if (seconds.value!!.text.isEmpty()) 0 else seconds.value!!.text.toInt())
     }
-
-
 }

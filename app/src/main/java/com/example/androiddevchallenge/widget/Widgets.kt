@@ -1,3 +1,18 @@
+/*
+ * Copyright 2021 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.androiddevchallenge.widget
 
 import androidx.compose.animation.core.Animatable
@@ -5,12 +20,33 @@ import androidx.compose.animation.core.exponentialDecay
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.gestures.DraggableState
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ProvideTextStyle
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,12 +110,11 @@ class Widgets {
                     orientation = Orientation.Vertical,
                     onDragStarted = {
                         coroutineScope.launch {
-                            animatedOffset.snapTo(animatedOffset.value )
+                            animatedOffset.snapTo(animatedOffset.value)
                         }
                     },
 
-                    state= DraggableState {
-
+                    state = DraggableState {
                     },
                     onDragStopped = { velocity ->
                         coroutineScope.launch {
@@ -111,7 +146,7 @@ class Widgets {
                                 initialVelocity = velocity,
                                 animationSpec = exponentialDecay(
                                     frictionMultiplier = 20f,
-                                    absVelocityThreshold =20f
+                                    absVelocityThreshold = 20f
 
                                 )
                             ).endState.value
@@ -124,13 +159,12 @@ class Widgets {
         ) {
             val spacing = 4.dp
 
-
             Spacer(modifier = Modifier.height(spacing))
 
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .offset(y =  coercedAnimatedOffset.roundToInt().dp)
+                    .offset(y = coercedAnimatedOffset.roundToInt().dp)
             ) {
                 val baseLabelModifier = Modifier.align(Alignment.Center)
                 ProvideTextStyle(textStyle) {
@@ -155,8 +189,7 @@ class Widgets {
             }
 
             Spacer(modifier = Modifier.height(spacing))
-
-    }
+        }
     }
 
     @Composable
@@ -164,16 +197,18 @@ class Widgets {
         Text(
             text = text,
             modifier = modifier.pointerInput(Unit) {
-                detectTapGestures(onLongPress = {
-                    // FIXME: Empty to disable text selection
-                })
+                detectTapGestures(
+                    onLongPress = {
+                        // FIXME: Empty to disable text selection
+                    }
+                )
             },
             style = MaterialTheme.typography.h6.copy(color = Color.Black)
         )
     }
 
     @Composable
-     fun ClockEditText(
+    fun ClockEditText(
         heading: String,
         min: TextFieldValue,
         min_focus: Boolean,
@@ -184,8 +219,6 @@ class Widgets {
 
         val deltaOverall by rememberSaveable { viewModel.delta }
         val color = remember { androidx.compose.animation.Animatable(Color.Transparent) }
-
-
 
         Box(
 
@@ -211,7 +244,6 @@ class Widgets {
                             color.animateTo(Color.Transparent)
                         }
                     }
-
                 }
 
                 .scrollable(
@@ -233,7 +265,6 @@ class Widgets {
                                         viewModelData.value = TextFieldValue((changedTime))
                                         viewModelProgress.value =
                                             changedTime.toFloat() / (if (heading == "H") 12 else 60)
-
                                     }
                                 }
                                 if ((abs(abs(delta) - deltaOverall)) > 1000) {
@@ -249,7 +280,6 @@ class Widgets {
                                         viewModelData.value = TextFieldValue((changedTime))
                                         viewModelProgress.value =
                                             changedTime.toFloat() / (if (heading == "H") 12 else 60)
-
                                     }
                                 }
                                 if ((abs(abs(delta) - deltaOverall)) < 1000) {
@@ -264,7 +294,6 @@ class Widgets {
             contentAlignment = Alignment.Center
         ) {
 
-
             TextField(
                 value = min,
                 onValueChange = {
@@ -273,13 +302,11 @@ class Widgets {
                         viewModelProgress.value = 0.0f
                     } else {
 
-
                         if (it.text.length <= 2) {
                             if ((checkIfTextIsEmpty(it.text)) <= (if (heading == "H") 12 else 60)) {
                                 viewModelData.value = it
                                 viewModelProgress.value =
                                     it.text.toFloat() / (if (heading == "H") 12 else 60)
-
                             }
                         }
                     }
@@ -290,11 +317,13 @@ class Widgets {
                         Color.White
                     } else {
                         Color.Black
-                    }, fontWeight = if (min_focus) {
+                    },
+                    fontWeight = if (min_focus) {
                         FontWeight.ExtraBold
                     } else {
                         FontWeight.Light
-                    }, textAlign = TextAlign.Center
+                    },
+                    textAlign = TextAlign.Center
                 ),
 
                 enabled = !(viewModel.startButtonClicked.value!!),
@@ -303,11 +332,9 @@ class Widgets {
                     keyboardType = KeyboardType.Number
                 ),
 
-
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentSize(align = Alignment.Center),
-
 
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
@@ -321,16 +348,17 @@ class Widgets {
 
             )
             Text(
-                heading, style = MaterialTheme.typography.h5.copy(
+                heading,
+                style = MaterialTheme.typography.h5.copy(
                     if (min_focus) {
                         Color.White
                     } else {
                         Color.Black
-                    }, fontSize = 10.sp, fontWeight = FontWeight.ExtraBold
+                    },
+                    fontSize = 10.sp, fontWeight = FontWeight.ExtraBold
                 ),
                 modifier = Modifier.padding(top = 30.dp, start = 20.dp)
             )
-
         }
     }
 }

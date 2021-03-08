@@ -18,13 +18,30 @@ package com.example.androiddevchallenge
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -40,7 +57,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
-import com.example.androiddevchallenge.ui.theme.*
+import com.example.androiddevchallenge.ui.theme.MyTheme
+import com.example.androiddevchallenge.ui.theme.orange300
+import com.example.androiddevchallenge.ui.theme.orange500
+import com.example.androiddevchallenge.ui.theme.purple300
 import com.example.androiddevchallenge.widget.Widgets
 
 class MainActivity : AppCompatActivity() {
@@ -62,7 +82,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-
 lateinit var viewModel: MainViewModel
 
 // Start building your app here!
@@ -70,18 +89,15 @@ lateinit var viewModel: MainViewModel
 @Composable
 fun MyApp() {
 
-    val minFocus by viewModel.minFocus.observeAsState(false)
+    val minFocus by viewModel.minFocus.observeAsState(initial = false)
     val hourFocus by viewModel.hourFocus.observeAsState(false)
     val secFocus by viewModel.secFocus.observeAsState(false)
-
 
     val hour by viewModel.hour.observeAsState(TextFieldValue("00"))
     val min by viewModel.minutes.observeAsState(TextFieldValue("00"))
     val sec by viewModel.seconds.observeAsState(TextFieldValue("00"))
 
-
     val startButtonClicked by viewModel.startButtonClicked.observeAsState(false)
-
 
     val minProgress by viewModel.minProgressTime.observeAsState(0.0f)
     val minAnimatedProgress by animateFloatAsState(
@@ -93,7 +109,6 @@ fun MyApp() {
         )
     )
 
-
     val hourProgress by viewModel.hourProgressTime.observeAsState(0.0f)
     val hourAnimatedProgress by animateFloatAsState(
         targetValue = hourProgress,
@@ -103,7 +118,6 @@ fun MyApp() {
             visibilityThreshold = 1 / 1000f
         )
     )
-
 
     val secProgress by viewModel.secProgressTime.observeAsState(0.0f)
     val secAnimatedProgress by animateFloatAsState(
@@ -115,7 +129,6 @@ fun MyApp() {
         )
     )
     Surface(color = MaterialTheme.colors.primary, modifier = Modifier.fillMaxWidth()) {
-
 
         Column {
 
@@ -140,8 +153,7 @@ fun MyApp() {
                         .wrapContentSize(align = Alignment.Center)
                         .weight(1f)
 
-                )
-                {
+                ) {
 
                     Widgets().ClockEditText(
                         "H",
@@ -166,8 +178,7 @@ fun MyApp() {
                         .fillMaxWidth()
                         .wrapContentSize(align = Alignment.Center)
                         .weight(1f)
-                )
-                {
+                ) {
 
                     Widgets().ClockEditText(
                         "M",
@@ -177,7 +188,6 @@ fun MyApp() {
                         viewModel.minFocus,
                         viewModel.minProgressTime
                     )
-
                 }
 
                 Text(
@@ -193,8 +203,7 @@ fun MyApp() {
                         .fillMaxWidth()
                         .wrapContentSize(align = Alignment.Center)
                         .weight(1f)
-                )
-                {
+                ) {
 
                     Widgets().ClockEditText(
                         "S",
@@ -204,10 +213,7 @@ fun MyApp() {
                         viewModel.secFocus,
                         viewModel.secProgressTime
                     )
-
                 }
-
-
             }
             Spacer(modifier = Modifier.weight(0.5f))
             Box(
@@ -215,8 +221,7 @@ fun MyApp() {
                     .weight(6f)
                     .align(alignment = Alignment.Start)
                     .padding(start = 10.dp, end = 10.dp)
-            )
-            {
+            ) {
 
                 Box(
                     modifier = Modifier
@@ -224,7 +229,6 @@ fun MyApp() {
                         .wrapContentWidth(align = Alignment.CenterHorizontally)
                         .size(400.dp)
                 ) {
-
 
                     Image(
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_clock),
@@ -251,7 +255,8 @@ fun MyApp() {
                         )
 
                         Text(
-                            "H", style = MaterialTheme.typography.h5.copy(
+                            "H",
+                            style = MaterialTheme.typography.h5.copy(
                                 color = if (minFocus) Color.White else Color.Black,
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.ExtraBold,
@@ -263,10 +268,7 @@ fun MyApp() {
                                 .fillMaxSize(0.32f)
                                 .padding(end = 10.dp)
 
-
                         )
-
-
                     }
                     this@Column.AnimatedVisibility(
                         visible = minProgress > 0, enter = fadeIn(),
@@ -283,7 +285,8 @@ fun MyApp() {
                             color = orange500
                         )
                         Text(
-                            "M", style = MaterialTheme.typography.h5.copy(
+                            "M",
+                            style = MaterialTheme.typography.h5.copy(
                                 color = Color.Black,
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.ExtraBold,
@@ -294,7 +297,6 @@ fun MyApp() {
                                 .wrapContentSize(align = Alignment.Center)
                                 .fillMaxSize(0.42f)
                                 .padding(end = 10.dp)
-
 
                         )
                     }
@@ -313,7 +315,8 @@ fun MyApp() {
                             color = orange300
                         )
                         Text(
-                            "S", style = MaterialTheme.typography.h5.copy(
+                            "S",
+                            style = MaterialTheme.typography.h5.copy(
                                 color = Color.Black,
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.ExtraBold,
@@ -325,11 +328,8 @@ fun MyApp() {
                                 .fillMaxSize(0.5f)
                                 .padding(end = 10.dp)
 
-
                         )
-
                     }
-
 
                     IconButton(
                         modifier = Modifier
@@ -339,7 +339,7 @@ fun MyApp() {
                         onClick = {
 
                             if (!startButtonClicked) {
-                                //check if the timer is initially set if so save the time to a variable which can be used for restore
+                                // check if the timer is initially set if so save the time to a variable which can be used for restore
                                 if (!viewModel.pauseClicked.value!!) {
                                     viewModel.setInitialTime()
                                 }
@@ -351,8 +351,8 @@ fun MyApp() {
                                 viewModel.stopTimer()
                                 viewModel.startButtonClicked.value = false
                             }
-
-                        }) {
+                        }
+                    ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(
                                 id =
@@ -360,13 +360,12 @@ fun MyApp() {
                                     R.drawable.ic_pause
                                 } else {
                                     R.drawable.ic_play
-
                                 }
-                            ), contentDescription = "play ot pause button",
+                            ),
+                            contentDescription = "play ot pause button",
                             tint = Color.Black
                         )
                     }
-
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
@@ -376,7 +375,6 @@ fun MyApp() {
                     .padding(20.dp)
             ) {
 
-
                 IconButton(
                     modifier = Modifier
                         .weight(1f)
@@ -384,7 +382,8 @@ fun MyApp() {
                     onClick = {
                         viewModel.stopTimer()
                         viewModel.resetTimerView()
-                    }) {
+                    }
+                ) {
                     Icon(
                         modifier = Modifier
                             .fillMaxSize()
@@ -395,13 +394,15 @@ fun MyApp() {
                         tint = MaterialTheme.colors.secondary
                     )
                 }
-                IconButton(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize(),
+                IconButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize(),
                     onClick = {
                         viewModel.stopTimer()
                         viewModel.reloadTimer()
-                    }) {
+                    }
+                ) {
                     Icon(
                         modifier = Modifier
                             .fillMaxSize()
@@ -414,16 +415,11 @@ fun MyApp() {
                         tint = MaterialTheme.colors.secondary
                     )
                 }
-
-
             }
             Spacer(modifier = Modifier.weight(1f))
         }
-
-
     }
 }
-
 
 fun checkIfTextIsEmpty(text: String): Int {
     return if (text.isBlank()) {
@@ -431,9 +427,7 @@ fun checkIfTextIsEmpty(text: String): Int {
     } else {
         text.toInt()
     }
-
 }
-
 
 @ExperimentalAnimationApi
 @Preview("Light Theme", widthDp = 360, heightDp = 640)
@@ -453,19 +447,18 @@ fun DarkPreview() {
     }
 }
 
-
 // for Reference
 
 //                        .pointerInput(Unit) {
 //                            detectVerticalDragGestures { change, dragAmount ->
 //                                val original = offsetY
-////                                val summed = original + dragAmount
+// //                                val summed = original + dragAmount
 //                                val newValue = (original + dragAmount).coerceIn(0f, size.height - 50.dp.toPx())
 //
 //
 //                                change.consumePositionChange()
 //                                viewModel.offsety.value = newValue
-////                                viewModel.offsety.value = newValue
+// //                                viewModel.offsety.value = newValue
 //                            }
 //                        }
 //                        .draggable(
